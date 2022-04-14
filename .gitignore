@@ -1,0 +1,9 @@
+secrets.json
+types/*
+.DS_Store
+praw.ini
+test.ipynb
+test.py
+__pycache__
+__pycache__/*
+.vscode/settings.json
