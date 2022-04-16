@@ -1,6 +1,6 @@
 import praw
 
-from letterboxd_averager import LetterboxdAverager
+from letterbot import LetterBot
 
 class SeenitBot:
 
@@ -32,7 +32,7 @@ class SeenitBot:
             film_id = film_url.split('/')[-1]
 
             try:
-                lba = LetterboxdAverager(self.bot_lid)
+                lba = LetterBot(self.bot_lid)
                 score, total_reviews, film_name = lba.get_rating(
                     film_id=film_id
                 )

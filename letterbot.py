@@ -3,40 +3,41 @@ import json
 import os
 
 
-class LetterboxdAverager:
-    def __init__(self, bot_id:str):
+class LetterBot:
+    def __init__(self, id:str):
+        '''Creates a letterbot instance.
+        :param id: Letterboxd account id to average followers reviews from.'''
         self.lbxd = self.init_letterboxd()
-        self.bot_id = bot_id
+        self.id = id 
 
     def init_letterboxd(self) -> lb.Letterboxd:
-        if not os.getenv('LBXD_API_KEY') and not os.getenv('LBXD_API_SECRET'):
-            try:
-                with open('secrets.json') as secrets_json:
-                    secrets = json.load(secrets_json)
-            except FileNotFoundError as e:
-                raise FileNotFoundError(
-                    "secrets.json MUST be in same dir as this file!"
-                    + e.with_traceback()
-                )
+        if os.getenv('LBXD_API_KEY') and not os.getenv('LBXD_API_SECRET'):
+            return lb.new()
 
-            if ('letterboxd' not in secrets
-                or 'key' not in secrets['letterboxd']
-                or 'secret' not in secrets['letterboxd']):
+        try:
+            with open('secrets.json') as secrets_json:
+                secrets = json.load(secrets_json)
+        except FileNotFoundError as e:
+            raise FileNotFoundError(
+                "secrets.json MUST be in same dir as this file!"
+                + e.with_traceback()
+            )
 
-                raise KeyError(
-                    "secrets.json must have the fields letterboxd.key "
-                    "and letterboxd.secret. Or LBXD_API_KEY and " 
-                    "LBXD_API_SECRET env varaibles must be set"
-                )
+        if ('letterboxd' not in secrets
+            or 'key' not in secrets['letterboxd']
+            or 'secret' not in secrets['letterboxd']):
 
-            lbxd = lb.new(
+            raise KeyError(
+                "secrets.json must have the fields letterboxd.key "
+                "and letterboxd.secret. Or LBXD_API_KEY and " 
+                "LBXD_API_SECRET env varaibles must be set"
+            )
+
+        lbxd = lb.new(
                 api_base='https://api.letterboxd.com/api/v0',
                 api_key=secrets['letterboxd']['key'],
                 api_secret=secrets['letterboxd']['secret']
             )
-
-        else: 
-            lbxd = lb.new()
 
         return lbxd
         
@@ -59,7 +60,7 @@ class LetterboxdAverager:
             member_film_relationships_request = {
                 "cursor": cursor,
                 "perPage": 100,
-                "member": self.bot_id,
+                "member": self.id,
                 "memberRelationship": "IsFollowing",
                 "filmRelationship": "Rated",
             }

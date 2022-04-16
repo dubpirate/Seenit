@@ -1,4 +1,3 @@
-from multiprocessing.spawn import import_main_path
 from time import sleep
 from seenit_bot import SeenitBot
 
